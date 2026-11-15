@@ -165,8 +165,9 @@ Reader, Writer and State as independent, compatible pieces.
 
 Free/Freer programs may also *describe* LogEvent instructions and
 delegate the actual I/O to a separate interpreter. That integration
-is deliberately not required by this API; Free/Freer is the
-separately scoped #12.
+is deliberately not required by this API; a concrete typed
+[Freer prototype](free-freer.md) (#12) is now available for
+query/update/emit instructions and explicitly selected interpreters.
 
 **Buffering caution:** DList append is persistent and O(1), but
 DList.toList materializes the **entire accumulated history** before
