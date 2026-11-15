@@ -27,6 +27,7 @@
 - **State**: `State<S,A>` for explicit immutable state transitions with `run`, `eval`, `exec`, `map`, `flatMap`, `get`, `put`, `modify`, `gets` and `pure`. Dependent computations receive updated state; `State.Result<S,A>` and non-null `State.Unit` express transitions. See the [State guide](docs/state.md).
 - **Stack-safe Trampoline**: `Trampoline<A>` with `done`, `more`, `map`, `flatMap` and iterative `run` for tail and mutual recursion as well as million-step bind chains. A private typed bind node avoids nested Java calls and unchecked casts. This is synchronous, not an async runtime. Includes a loop/allocations benchmark; see the [Trampoline guide](docs/trampoline.md).
 - **Typed Free/Freer programs**: `Freer<A>` and sealed `Instruction<A>` for lazy query/update/emit descriptions, with pure simulation and explicitly chosen redacted emission. Includes a standalone Haskell classic Free/GADT reference, law tests, deep stack-safety checks and a direct-ADT allocation comparison. See the [Free/Freer guide](docs/free-freer.md).
+- **Pure typed actors**: `ActorBehavior<S,M>` and typed effect descriptions, immutable state transitions and behavior switching, plus a deterministic, bounded, synchronous FIFO `ActorMachine` simulator. No threads, mandatory actor runtime or implicit logging I/O. See the [actor guide](docs/actors.md).
 - **Structured logging as data**: immutable `LogEvent` with typed fields, explicit timestamps, severity and context, safe redacting `LogFormatter`, and bounded synchronous `LogInterpreter` for test collection, silence and caller-selected backend emission. Sampling, failure policies and delivery limits are explicit; no mandatory logging backend. See the [logging guide](docs/logging.md).
 
 ## Areas under consideration
@@ -61,7 +62,7 @@ JSpecify `@NullMarked` is enabled for the initial package. **NullAway checks the
 
 ## Status
 
-`F3`–`F10`, `Either`, `These`, `Those`, `EitherChoice`, accumulating `Validation`, persistent `DList`, `Writer`, `Reader`, `State`, stack-safe `Trampoline`, interpreted structured logging and focused typed `Freer` implemented. No published release yet.
+`F3`–`F10`, `Either`, `These`, `Those`, `EitherChoice`, accumulating `Validation`, persistent `DList`, `Writer`, `Reader`, `State`, stack-safe `Trampoline`, interpreted structured logging, focused typed `Freer` and pure actor simulation implemented. No published release yet.
 
 ## License
 
