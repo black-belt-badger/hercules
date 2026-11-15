@@ -8,7 +8,7 @@
 
 - **Opt in, don't buy in.** Each abstraction should be useful independently and interoperate with ordinary Java code.
 - **Standard Java at the boundary.** Prefer JDK `Function`, `BiFunction`, `List`, `Map`, `Optional`, `CompletionStage`, `Flow`, records and sealed types where they suffice.
-- **Audited, deliberate dependencies.** JSpecify defines static nullness contracts; Lombok generates structural checks when Hercules is built, not when clients compile. Guava is retained for the planned morphism `Tree`/`Layer` API (#14), which uses `ImmutableList`, although current production sources have no Guava imports. See the [dependency policy](docs/dependencies.md).
+- **Audited, deliberate dependencies.** JSpecify defines static nullness contracts; Lombok generates structural checks when Hercules is built, not when clients compile. Guava remains a deliberate compile dependency because the extracted `Tree`/`Layer` morphism API (#14) publicly uses `ImmutableList`; no further framework dependencies are introduced. See the [dependency policy](docs/dependencies.md).
 - **Prefer algebraic laws to ceremony.** Add examples, tests and clear semantics. Do not manufacture a full typeclass hierarchy or duplicate JDK reduction APIs without a practical reason.
 - **Functional, not dogmatic.** Explicit state, immutable data and composition are goals; existing Java programs remain first-class citizens.
 - **Pure core, interpreted effects.** Describe logging and other effects as data; perform I/O only at explicit interpretation boundaries.
@@ -22,6 +22,7 @@
 - **Explicit choice**: `EitherChoice<L>` supports leftmost-success fallback and ordered accumulation of failed alternatives using a caller-provided identity and combiner. This is a concrete choice monoid, not a universal higher-kinded `Alternative`. See the [choice guide](docs/choice.md).
 - **Accumulating validation**: `Validation<E,A>` with `Valid`/`Invalid` and `ValidationApplicative<E>` for independent checks, lawful `pure`/`ap`/`map2`, ordered `sequence`/`traverse` for many checks, arity-aware `map3`–`map10` using `F3`–`F10`, and `CompletionStage` composition (`map2Stages`/`sequenceStages`) for independently supplied asynchronous checks. Normal validation failures accumulate; exceptional completion remains exceptional. See the [Validation guide](docs/validation.md).
 - **Persistent difference lists**: `DList<A>` with constant-time `cons`, `snoc` and `append`, immutable source snapshots and stack-safe iterative materialization into an unmodifiable JDK `List`. Includes a manual allocation/timing benchmark and diagnostic-accumulation example. See the [DList guide](docs/dlist.md).
+- **Tree recursion schemes**: `Tree<N>`, `Layer<N,C>` and `Morphisms.ana/cata/hylo` for immutable ordered trees, with lawful `Layer.map`, stack-safe iterative traversal and optional `Trees.prettyPrint`. Adapted from an existing proof of concept without application dependencies; public `ImmutableList` types preserve the existing design. See the [morphisms tutorial](docs/morphisms.md).
 - **Writer**: `Writer<W,A>` and `WriterPolicy<W>` for pure, strictly ordered value-plus-output composition with an explicit identity and associative combiner. Works naturally with `DList<Diagnostic>`, including deep stack-safe bind loops; no logging I/O is performed. See the [Writer guide](docs/writer.md).
 - **Reader**: `Reader<R,A>` for explicit configuration/context-dependent computations, with lazy `run`, `map`, `flatMap`, `ask`, `asks`, `local` and `pure`. Deep nested composition is subject to the JVM stack limit; see the [Reader guide](docs/reader.md) and the runnable depth probe.
 - **State**: `State<S,A>` for explicit immutable state transitions with `run`, `eval`, `exec`, `map`, `flatMap`, `get`, `put`, `modify`, `gets` and `pure`. Dependent computations receive updated state; `State.Result<S,A>` and non-null `State.Unit` express transitions. See the [State guide](docs/state.md).
@@ -52,7 +53,7 @@ io.github.blackbeltbadger:hercules:0.1.0-SNAPSHOT
 
 **Java API namespace:** `bbb.hercules` (imports such as `bbb.hercules.Either` and `bbb.hercules.Validation`). The shorter BBB Java package name is intentionally independent of the unchanged Maven groupId. This pre-release package migration requires consumers of earlier snapshots to update their Java imports; it changes binary names and does not ship compatibility wrappers.
 
-The project is a **thin library JAR**, not an executable application. Guava and JSpecify are compile-scope dependencies for Maven consumers; Lombok is provided/annotation-processing only. Guava is intentionally reserved for the public `ImmutableList` morphism model (#14), not used by the current production code. JUnit 5 and **Instancio** are test-only. The [dependency policy](docs/dependencies.md) documents scopes and a standalone consumer smoke test.
+The project is a **thin library JAR**, not an executable application. Guava and JSpecify are compile-scope dependencies for Maven consumers; Lombok is provided/annotation-processing only. Guava is used by the public `ImmutableList` child positions of the extracted `Tree`/`Layer` morphism model (#14). JUnit 5 and **Instancio** are test-only. The [dependency policy](docs/dependencies.md) documents scopes and a standalone consumer smoke test.
 
 ```bash
 ./mvnw -B -ntp verify
@@ -62,7 +63,7 @@ JSpecify `@NullMarked` is enabled for the initial package. **NullAway checks the
 
 ## Status
 
-`F3`–`F10`, `Either`, `These`, `Those`, `EitherChoice`, accumulating `Validation`, persistent `DList`, `Writer`, `Reader`, `State`, stack-safe `Trampoline`, interpreted structured logging, focused typed `Freer` and pure actor simulation implemented. No published release yet.
+`F3`–`F10`, `Either`, `These`, `Those`, `EitherChoice`, accumulating `Validation`, persistent `DList`, tree morphisms (`ana`, `cata`, `hylo`), `Writer`, `Reader`, `State`, stack-safe `Trampoline`, interpreted structured logging, focused typed `Freer` and pure actor simulation implemented. No published release yet.
 
 ## License
 
